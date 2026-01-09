@@ -1,0 +1,168 @@
+{
+    "00.solver_trace_meta": {
+        "trace_id": "TRACE-MATH-SOLVE-9928-EXTENDED",
+        "solver_engine": "Euclid_Hypercube_Solver_v4.5.1-Enterprise",
+        "resolution_strategy": "HYBRID_EAGER_LAZY_DAG",
+        "precision": "DECIMAL_128",
+        "optimization_flags": [
+            "VECTORIZATION_ENABLED",
+            "MEMOIZATION_ACTIVE",
+            "SPARSE_MATRIX_COMPRESSION"
+        ],
+        "compute_cluster_node": "cn-north-1-compute-042",
+        "execution_context": {
+            "thread_id": "th-8821",
+            "memory_pool": "high_priority_heap",
+            "start_timestamp": "2023-12-31T23:59:59.102Z",
+            "end_timestamp": "2023-12-31T23:59:59.147Z"
+        }
+    },
+    "resolution_target": {
+        "metric_symbol": "M_GP (Gross Profit)",
+        "target_coordinates": {
+            "dim_time": "2023-Q4",
+            "dim_entity": "ENT_CN_HQ",
+            "dim_currency": "CNY",
+            "dim_scenario": "ACTUAL",
+            "dim_product_line": "ALL_PRODUCTS",
+            "dim_channel": "GLOBAL_CONSOLIDATED"
+        },
+        "constraints": {
+            "fx_rate_source": "AVG_MONTHLY_2023",
+            "elimination_rule": "STD_ELIM_V2",
+            "rounding_mode": "HALF_UP"
+        }
+    },
+    "mathematical_derivation_process": {
+        "root_node": {
+            "node_id": "N0_ROOT",
+            "term_expression": "Gross_Profit(t, e, c, s, p, ch)",
+            "operation_logic": "ALGEBRAIC_DIFFERENCE",
+            "equation": "f(x, y) = x - y",
+            "resolved_scalar_value": 1425000.00,
+            "performance_metrics": {
+                "compute_time_ms": 45,
+                "memory_alloc_kb": 128,
+                "cache_hit_rate": 0.85
+            },
+            "operands": [
+                {
+                    "operand_role": "MINUEND (x)",
+                    "node_id": "N1_NET_REVENUE",
+                    "term_expression": "Net_Revenue",
+                    "operation_logic": "ALGEBRAIC_SUM",
+                    "equation": "g(a, b) = a + b",
+                    "resolved_scalar_value": 1950000.00,
+                    "operands": [
+                        {
+                            "operand_role": "TERM (a)",
+                            "node_id": "N2_GROSS_SALES",
+                            "term_expression": "Sum(Sales_Accounts)",
+                            "operation_logic": "DIMENSIONAL_SET_AGGREGATION",
+                            "set_predicate": "Account ∈ {6001..6009}",
+                            "resolved_scalar_value": 2100000.00,
+                            "input_tensors": [
+                                {
+                                    "tensor_id": "T_ACC_6001_REG_A",
+                                    "dimension_point": "Account:6001, Region:CN_EAST",
+                                    "data_structure": "SparseVector<R^1024>",
+                                    "sparsity_ratio": 0.92,
+                                    "raw_elements_summary": {
+                                        "count": 45,
+                                        "sum": 1200000.00,
+                                        "min": 5000.00,
+                                        "max": 150000.00
+                                    },
+                                    "reduction_op": "SUM"
+                                },
+                                {
+                                    "tensor_id": "T_ACC_6001_REG_B",
+                                    "dimension_point": "Account:6001, Region:CN_SOUTH",
+                                    "data_structure": "SparseVector<R^512>",
+                                    "sparsity_ratio": 0.88,
+                                    "raw_elements_summary": {
+                                        "count": 22,
+                                        "sum": 900000.00,
+                                        "min": 12000.00,
+                                        "max": 88000.00
+                                    },
+                                    "reduction_op": "SUM"
+                                }
+                            ]
+                        },
+                        {
+                            "operand_role": "TERM (b)",
+                            "node_id": "N2_RETURNS_DISCOUNTS",
+                            "term_expression": "Sum(Contra_Revenue_Accounts)",
+                            "operation_logic": "DIMENSIONAL_SET_AGGREGATION",
+                            "set_predicate": "Account ∈ {6101, 6102}",
+                            "resolved_scalar_value": -150000.00,
+                            "input_tensors": [
+                                {
+                                    "tensor_id": "T_ACC_6101",
+                                    "dimension_point": "Account:6101",
+                                    "data_structure": "Vector<R^5>",
+                                    "raw_elements": [
+                                        -50000.00,
+                                        -20000.00,
+                                        -80000.00
+                                    ],
+                                    "reduced_value": -150000.00,
+                                    "reduction_op": "SUM"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "operand_role": "SUBTRAHEND (y)",
+                    "node_id": "N1_TOTAL_COGS",
+                    "term_expression": "Total_Cost_Of_Sales",
+                    "operation_logic": "COMPLEX_ALLOCATION_SUM",
+                    "equation": "h(m, l, o) = m + l + alloc(o, driver)",
+                    "resolved_scalar_value": 525000.00,
+                    "operands": [
+                        {
+                            "operand_role": "DIRECT_COST (m)",
+                            "node_id": "N2_MATERIAL_COST",
+                            "term_expression": "Sum(Material_Accounts)",
+                            "resolved_scalar_value": 300000.00,
+                            "input_tensors": [
+                                {
+                                    "tensor_id": "T_ACC_6401_MAT",
+                                    "dimension_point": "Account:6401",
+                                    "data_structure": "Vector<R^12>",
+                                    "raw_elements": [
+                                        100000.00,
+                                        150000.00,
+                                        50000.00
+                                    ],
+                                    "reduced_value": 300000.00,
+                                    "reduction_op": "SUM"
+                                }
+                            ]
+                        },
+                        {
+                            "operand_role": "DIRECT_LABOR (l)",
+                            "node_id": "N2_LABOR_COST",
+                            "term_expression": "Sum(Labor_Accounts)",
+                            "resolved_scalar_value": 150000.00,
+                            "input_tensors": [
+                                {
+                                    "tensor_id": "T_ACC_6402_LAB",
+                                    "dimension_point": "Account:6402",
+                                    "data_structure": "Vector<R^4>",
+                                    "raw_elements": [
+                                        150000.00
+                                    ],
+                                    "reduced_value": 150000.00,
+                                    "reduction_op": "SUM"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 15px;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            min-height: 30px;
+        }
+
+        /* Tree View Styles */
+        .tree-view {
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .tree-view ul {
+            list-style-type: none;
+            padding-left: 20px;
+            margin: 0;
+        }
+        .tree-view li {
+            margin: 0;
+        }
+        .tree-toggle {
+            cursor: pointer;
+            margin-right: 5px;
+            user-select: none;
+            color: #333;
+        }
+        .tree-toggle:hover {
+            color: #000;
+            font-weight: bold;
+        }
+        .tree-key {
+            color: #a31515; /* VS Code JSON key color style */
+        }
+        .tree-string { color: #0451a5; }
+        .tree-number { color: #098658; }
+        .tree-boolean { color: #0000ff; }
+        .tree-null { color: #0000ff; }
+    </style>
+</head>
+
+<body>
+    <h3>Show the complete step-by-step solution.</h3>
+    <div id="math-header" style="margin: 10px 0;"></div>
+    <p>Select a cell to view metrics:</p>
+    <div id="display" class="box">---</div>
+    <button id="show-content-btn">Show Cell Content</button>
+    <button id="log-btn">Log to Console</button>
+    <button id="load-json-btn">Load Calculation Graph</button>
+    <pre id="json-display" class="box" style="overflow: auto; max-height: 500px;"></pre>
+    <script src="trace.js"></script>
+</body>
+
+</html>
