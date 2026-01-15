@@ -25,7 +25,11 @@ async function loadJsonContent() {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
+        let data = await response.json();
+        
+        // Recursively resolve references
+        data = await resolveReferences(data);
+
         const container = document.getElementById('json-display');
         container.innerHTML = ''; // Clear previous content
         container.className = 'box tree-view'; // Add tree-view class
@@ -34,6 +38,32 @@ async function loadJsonContent() {
         console.error('Error loading JSON:', error);
         document.getElementById('json-display').textContent = 'Error loading JSON: ' + error.message;
     }
+}
+
+async function resolveReferences(data, basePath = 'multidim_dag_resolution/') {
+    if (data === null || typeof data !== 'object') {
+        return data;
+    }
+
+    if (Array.isArray(data)) {
+        return Promise.all(data.map(item => resolveReferences(item, basePath)));
+    }
+
+    if (data['$ref']) {
+        const refPath = basePath + data['$ref'];
+        const response = await fetch(refPath);
+        if (!response.ok) {
+            throw new Error(`Failed to load reference: ${refPath}`);
+        }
+        const refData = await response.json();
+        return resolveReferences(refData, basePath);
+    }
+
+    const resolved = {};
+    for (const key of Object.keys(data)) {
+        resolved[key] = await resolveReferences(data[key], basePath);
+    }
+    return resolved;
 }
 
 function createTreeView(data, key = null) {
