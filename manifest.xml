@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xsi:type="TaskPaneApp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>d250807b-8b2b-4e94-9b54-7f156644f83c</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Euclid System</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Euclid Derivation Trace" />
+  <Description DefaultValue="A powerful trace tool for Euclid System." />
+  <Hosts>
+    <Host Name="Workbook" />
+  </Hosts>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://euclidolap.com/excel-add-in/trace.html" />
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+</OfficeApp>
