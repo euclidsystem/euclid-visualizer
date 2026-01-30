@@ -1,58 +1,15 @@
 {
-    "00.solver_trace_meta": {
-        "trace_id": "TRACE-MATH-SOLVE-9928-EXTENDED",
-        "solver_engine": "Euclid_Hypercube_Solver_v4.5.1-Enterprise",
-        "resolution_strategy": "HYBRID_EAGER_LAZY_DAG",
-        "precision": "DECIMAL_128",
-        "optimization_flags": [
-            "VECTORIZATION_ENABLED",
-            "MEMOIZATION_ACTIVE",
-            "SPARSE_MATRIX_COMPRESSION"
-        ],
-        "compute_cluster_node": "cn-north-1-compute-042",
-        "execution_context": {
-            "thread_id": "th-8821",
-            "memory_pool": "high_priority_heap",
-            "start_timestamp": "2023-12-31T23:59:59.102Z",
-            "end_timestamp": "2023-12-31T23:59:59.147Z"
-        }
-    },
-    "resolution_target": {
-        "metric_symbol": "M_GP (Gross Profit)",
-        "target_coordinates": {
-            "dim_time": "2023-Q4",
-            "dim_entity": "ENT_CN_HQ",
-            "dim_currency": "CNY",
-            "dim_scenario": "ACTUAL",
-            "dim_product_line": "ALL_PRODUCTS",
-            "dim_channel": "GLOBAL_CONSOLIDATED"
+    "metric": "Gross Profit",
+    "value": 1425000.0,
+    "formula": "Net Revenue - Total COGS",
+    "components": [
+        {
+            "role": "net_revenue",
+            "ref": "net_revenue_calc_graph.json"
         },
-        "constraints": {
-            "fx_rate_source": "AVG_MONTHLY_2023",
-            "elimination_rule": "STD_ELIM_V2",
-            "rounding_mode": "HALF_UP"
+        {
+            "role": "total_cogs",
+            "ref": "total_cogs_calc_graph.json"
         }
-    },
-    "mathematical_derivation_process": {
-        "root_node": {
-            "node_id": "N0_ROOT",
-            "term_expression": "Gross_Profit(t, e, c, s, p, ch)",
-            "operation_logic": "ALGEBRAIC_DIFFERENCE",
-            "equation": "f(x, y) = x - y",
-            "resolved_scalar_value": 1425000.00,
-            "performance_metrics": {
-                "compute_time_ms": 45,
-                "memory_alloc_kb": 128,
-                "cache_hit_rate": 0.85
-            },
-            "operands": [
-                {
-                    "$ref": "net_revenue_calc_graph.json"
-                },
-                {
-                    "$ref": "total_cogs_calc_graph.json"
-                }
-            ]
-        }
-    }
+    ]
 }

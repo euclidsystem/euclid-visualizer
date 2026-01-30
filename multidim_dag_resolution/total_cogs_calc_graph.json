@@ -1,48 +1,17 @@
 {
-    "operand_role": "[666..] SUBTRAHEND (y)",
-    "node_id": "N1_TOTAL_COGS",
-    "term_expression": "Total_Cost_Of_Sales",
-    "operation_logic": "COMPLEX_ALLOCATION_SUM",
-    "equation": "h(m, l, o) = m + l + alloc(o, driver)",
-    "resolved_scalar_value": 525000.00,
-    "operands": [
+    "metric": "Total COGS",
+    "value": 525000.0,
+    "formula": "Material Cost + Labor Cost",
+    "components": [
         {
-            "operand_role": "DIRECT_COST (m)",
-            "node_id": "N2_MATERIAL_COST",
-            "term_expression": "Sum(Material_Accounts)",
-            "resolved_scalar_value": 300000.00,
-            "input_tensors": [
-                {
-                    "tensor_id": "T_ACC_6401_MAT",
-                    "dimension_point": "Account:6401",
-                    "data_structure": "Vector<R^12>",
-                    "raw_elements": [
-                        100000.00,
-                        150000.00,
-                        50000.00
-                    ],
-                    "reduced_value": 300000.00,
-                    "reduction_op": "SUM"
-                }
-            ]
+            "name": "Material Cost",
+            "value": 300000.0,
+            "source_accounts": "6401"
         },
         {
-            "operand_role": "DIRECT_LABOR (l)",
-            "node_id": "N2_LABOR_COST",
-            "term_expression": "Sum(Labor_Accounts)",
-            "resolved_scalar_value": 150000.00,
-            "input_tensors": [
-                {
-                    "tensor_id": "T_ACC_6402_LAB",
-                    "dimension_point": "Account:6402",
-                    "data_structure": "Vector<R^4>",
-                    "raw_elements": [
-                        150000.00
-                    ],
-                    "reduced_value": 150000.00,
-                    "reduction_op": "SUM"
-                }
-            ]
+            "name": "Labor Cost",
+            "value": 150000.0,
+            "source_accounts": "6402"
         }
     ]
 }
