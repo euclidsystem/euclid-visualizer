@@ -1,68 +1,17 @@
 {
-    "operand_role": "[x66..] MINUEND (x)",
-    "node_id": "N1_NET_REVENUE",
-    "term_expression": "Net_Revenue",
-    "operation_logic": "ALGEBRAIC_SUM",
-    "equation": "g(a, b) = a + b",
-    "resolved_scalar_value": 1950000.00,
-    "operands": [
+    "metric": "Net Revenue",
+    "value": 1950000.0,
+    "formula": "Gross Sales - Returns and Discounts",
+    "components": [
         {
-            "operand_role": "TERM (a)",
-            "node_id": "N2_GROSS_SALES",
-            "term_expression": "Sum(Sales_Accounts)",
-            "operation_logic": "DIMENSIONAL_SET_AGGREGATION",
-            "set_predicate": "Account ∈ {6001..6009}",
-            "resolved_scalar_value": 2100000.00,
-            "input_tensors": [
-                {
-                    "tensor_id": "T_ACC_6001_REG_A",
-                    "dimension_point": "Account:6001, Region:CN_EAST",
-                    "data_structure": "SparseVector<R^1024>",
-                    "sparsity_ratio": 0.92,
-                    "raw_elements_summary": {
-                        "count": 45,
-                        "sum": 1200000.00,
-                        "min": 5000.00,
-                        "max": 150000.00
-                    },
-                    "reduction_op": "SUM"
-                },
-                {
-                    "tensor_id": "T_ACC_6001_REG_B",
-                    "dimension_point": "Account:6001, Region:CN_SOUTH",
-                    "data_structure": "SparseVector<R^512>",
-                    "sparsity_ratio": 0.88,
-                    "raw_elements_summary": {
-                        "count": 22,
-                        "sum": 900000.00,
-                        "min": 12000.00,
-                        "max": 88000.00
-                    },
-                    "reduction_op": "SUM"
-                }
-            ]
+            "name": "Gross Sales",
+            "value": 2100000.0,
+            "source_accounts": "6001-6009"
         },
         {
-            "operand_role": "TERM (b)",
-            "node_id": "N2_RETURNS_DISCOUNTS",
-            "term_expression": "Sum(Contra_Revenue_Accounts)",
-            "operation_logic": "DIMENSIONAL_SET_AGGREGATION",
-            "set_predicate": "Account ∈ {6101, 6102}",
-            "resolved_scalar_value": -150000.00,
-            "input_tensors": [
-                {
-                    "tensor_id": "T_ACC_6101",
-                    "dimension_point": "Account:6101",
-                    "data_structure": "Vector<R^5>",
-                    "raw_elements": [
-                        -50000.00,
-                        -20000.00,
-                        -80000.00
-                    ],
-                    "reduced_value": -150000.00,
-                    "reduction_op": "SUM"
-                }
-            ]
+            "name": "Returns and Discounts",
+            "value": -150000.0,
+            "source_accounts": "6101,6102"
         }
     ]
 }
