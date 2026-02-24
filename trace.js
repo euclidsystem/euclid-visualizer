@@ -16,7 +16,8 @@ Office.onReady((info) => {
 });
 
 function handleButtonClick() {
-    console.log('Button clicked!');
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] Trace button clicked`);
 }
 
 async function loadJsonContent() {
@@ -77,7 +78,7 @@ function createTreeView(data, key = null) {
             span.appendChild(keySpan);
         }
 
-        const mathKeys = ['equation', 'term_expression', 'formula', 'set_predicate'];
+        const mathKeys = ['equation', 'term_expression', 'formula', 'set_predicate', 'expression'];
         if (key && mathKeys.includes(key) && typeof data === 'string') {
             const mathSpan = document.createElement('span');
             mathSpan.style.margin = '0 5px';
@@ -124,7 +125,8 @@ function createTreeView(data, key = null) {
     const keys = Object.keys(data);
     const count = keys.length;
     const openBrace = document.createElement('span');
-    openBrace.textContent = isArray ? `[ ${count} items ]` : `{ ... }`;
+    openBrace.className = 'tree-brace';
+    openBrace.textContent = isArray ? `[ ${count} item${count !== 1 ? 's' : ''} ]` : `{ ${count} key${count !== 1 ? 's' : ''} }`;
     
     header.appendChild(toggle);
     header.appendChild(label);
@@ -170,7 +172,7 @@ function createTreeView(data, key = null) {
             toggle.textContent = '[+]';
             // Show summary when collapsed
             const count = keys.length;
-            openBrace.textContent = isArray ? `[ ${count} items ]` : `{ ... }`;
+            openBrace.textContent = isArray ? `[ ${count} item${count !== 1 ? 's' : ''} ]` : `{ ${count} key${count !== 1 ? 's' : ''} }`;
         }
     };
 
