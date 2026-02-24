@@ -1,7 +1,9 @@
 {
     "metric": "Net Revenue",
+    "description": "Total revenue after returns, allowances, and discounts",
     "value": 1950000.0,
-    "formula": "Gross Sales - Returns and Discounts",
+    "currency": "USD",
+    "formula": "\\text{Gross Sales} - \\text{Returns \\& Discounts}",
     "components": [
         {
             "name": "Gross Sales",

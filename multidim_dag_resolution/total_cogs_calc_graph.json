@@ -1,7 +1,9 @@
 {
     "metric": "Total COGS",
+    "description": "Aggregate cost of goods sold including material and labor",
     "value": 525000.0,
-    "formula": "Material Cost + Labor Cost",
+    "currency": "USD",
+    "formula": "\\text{Material Cost} + \\text{Labor Cost}",
     "components": [
         {
             "name": "Material Cost",
@@ -12,6 +14,11 @@
             "name": "Labor Cost",
             "value": 150000.0,
             "source_accounts": "6402"
+        },
+        {
+            "name": "Overhead",
+            "value": 75000.0,
+            "source_accounts": "6403"
         }
     ]
 }

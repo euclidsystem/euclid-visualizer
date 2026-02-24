@@ -1,15 +1,17 @@
 {
     "metric": "Gross Profit",
+    "description": "Revenue remaining after deducting cost of goods sold",
     "value": 1425000.0,
-    "formula": "Net Revenue - Total COGS",
+    "currency": "USD",
+    "formula": "\\text{Net Revenue} - \\text{Total COGS}",
     "components": [
         {
             "role": "net_revenue",
-            "ref": "net_revenue_calc_graph.json"
+            "$ref": "net_revenue_calc_graph.json"
         },
         {
             "role": "total_cogs",
-            "ref": "total_cogs_calc_graph.json"
+            "$ref": "total_cogs_calc_graph.json"
         }
     ]
 }
