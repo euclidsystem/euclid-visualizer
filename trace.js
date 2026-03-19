@@ -1,8 +1,15 @@
 Office.onReady((info) => {
+    const statusEl = document.getElementById('maintenance-status');
+
     if (info.host === Office.HostType.Excel) {
         document.getElementById('log-btn').addEventListener('click', handleButtonClick);
         document.getElementById('show-content-btn').addEventListener('click', showCellContent);
         document.getElementById('load-json-btn').addEventListener('click', loadJsonContent);
+        if (statusEl) {
+            statusEl.textContent = 'Maintained - Excel Connected';
+        }
+    } else if (statusEl) {
+        statusEl.textContent = 'Maintained - Non-Excel Host';
     }
     
     // Render the accounting equation header
@@ -13,6 +20,8 @@ Office.onReady((info) => {
             displayMode: true
         });
     }
+
+    updateRefreshMeta('Ready');
 });
 
 function handleButtonClick() {
@@ -22,7 +31,11 @@ function handleButtonClick() {
 
 async function loadJsonContent() {
     try {
-        const response = await fetch('multidim_dag_resolution/gross_profit_calc_graph.json');
+        const select = document.getElementById('graph-select');
+        const selectedGraph = select && select.value ? select.value : 'gross_profit_calc_graph.json';
+        const graphPath = `multidim_dag_resolution/${selectedGraph}`;
+
+        const response = await fetch(graphPath);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -35,10 +48,23 @@ async function loadJsonContent() {
         container.innerHTML = ''; // Clear previous content
         container.className = 'box tree-view'; // Add tree-view class
         container.appendChild(createTreeView(data));
+        updateRefreshMeta(`Loaded ${selectedGraph}`);
     } catch (error) {
         console.error('Error loading JSON:', error);
         document.getElementById('json-display').textContent = 'Error loading JSON: ' + error.message;
+        updateRefreshMeta('Load failed');
     }
+}
+
+function updateRefreshMeta(contextText) {
+    const refreshMeta = document.getElementById('refresh-meta');
+    if (!refreshMeta) {
+        return;
+    }
+
+    const now = new Date();
+    const localTime = now.toLocaleString();
+    refreshMeta.textContent = `Last refresh: ${localTime} (${contextText})`;
 }
 
 async function resolveReferences(data, basePath = 'multidim_dag_resolution/') {
