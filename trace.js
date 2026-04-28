@@ -1,8 +1,27 @@
-Office.onReady((info) => {
+let appInitialized = false;
+
+function initializeApp(info = { host: 'BrowserPreview' }) {
+    if (appInitialized) {
+        return;
+    }
+
+    appInitialized = true;
+    const statusEl = document.getElementById('maintenance-status');
+
     if (info.host === Office.HostType.Excel) {
         document.getElementById('log-btn').addEventListener('click', handleButtonClick);
         document.getElementById('show-content-btn').addEventListener('click', showCellContent);
         document.getElementById('load-json-btn').addEventListener('click', loadJsonContent);
+        if (statusEl) {
+            statusEl.textContent = 'Maintained - Excel Connected';
+        }
+    } else {
+        document.getElementById('log-btn').addEventListener('click', handleButtonClick);
+        document.getElementById('show-content-btn').addEventListener('click', showCellContent);
+        document.getElementById('load-json-btn').addEventListener('click', loadJsonContent);
+        if (statusEl) {
+            statusEl.textContent = 'Maintained - Browser Preview';
+        }
     }
     
     // Render the accounting equation header
@@ -13,6 +32,19 @@ Office.onReady((info) => {
             displayMode: true
         });
     }
+
+    updateRefreshMeta('Ready');
+    loadJsonContent();
+}
+
+if (typeof Office !== 'undefined' && Office.onReady) {
+    Office.onReady((info) => {
+        initializeApp(info);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeApp();
 });
 
 function handleButtonClick() {
@@ -22,7 +54,11 @@ function handleButtonClick() {
 
 async function loadJsonContent() {
     try {
-        const response = await fetch('multidim_dag_resolution/gross_profit_calc_graph.json');
+        const select = document.getElementById('graph-select');
+        const selectedGraph = select && select.value ? select.value : 'gross_profit_calc_graph.json';
+        const graphPath = `multidim_dag_resolution/${selectedGraph}`;
+
+        const response = await fetch(graphPath);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -35,10 +71,124 @@ async function loadJsonContent() {
         container.innerHTML = ''; // Clear previous content
         container.className = 'box tree-view'; // Add tree-view class
         container.appendChild(createTreeView(data));
+        updateGraphSummary(data, selectedGraph);
+        updateRefreshMeta(`Loaded ${selectedGraph}`);
     } catch (error) {
         console.error('Error loading JSON:', error);
         document.getElementById('json-display').textContent = 'Error loading JSON: ' + error.message;
+        updateGraphSummary(null, 'Load failed', error.message);
+        updateRefreshMeta('Load failed');
     }
+}
+
+function updateGraphSummary(data, selectedGraph, errorMessage = '') {
+    const metricEl = document.getElementById('summary-metric');
+    const fileEl = document.getElementById('summary-file');
+    const nodesEl = document.getElementById('summary-nodes');
+    const componentsEl = document.getElementById('summary-components');
+    const descriptionEl = document.getElementById('summary-description');
+    const valueEl = document.getElementById('summary-value');
+    const formulaEl = document.getElementById('formula-preview');
+
+    if (!metricEl || !fileEl || !nodesEl || !componentsEl || !descriptionEl || !valueEl || !formulaEl) {
+        return;
+    }
+
+    if (!data) {
+        metricEl.textContent = 'Unavailable';
+        fileEl.textContent = selectedGraph;
+        nodesEl.textContent = '0 nodes';
+        componentsEl.textContent = '0 direct components';
+        descriptionEl.textContent = errorMessage || 'Unable to summarize the selected graph.';
+        valueEl.textContent = '--';
+        formulaEl.textContent = 'Formula preview unavailable.';
+        return;
+    }
+
+    const componentCount = Array.isArray(data.components) ? data.components.length : 0;
+    const nodeCount = countGraphNodes(data);
+    const formattedValue = formatMetricValue(data.value, data.currency);
+
+    metricEl.textContent = data.metric || 'Unnamed Metric';
+    fileEl.textContent = selectedGraph;
+    nodesEl.textContent = `${nodeCount} node${nodeCount === 1 ? '' : 's'}`;
+    componentsEl.textContent = `${componentCount} direct component${componentCount === 1 ? '' : 's'}`;
+    descriptionEl.textContent = data.description || 'No description available.';
+    valueEl.textContent = formattedValue;
+
+    renderFormulaPreview(data.formula, formulaEl);
+}
+
+function countGraphNodes(data) {
+    if (data === null || typeof data !== 'object') {
+        return 0;
+    }
+
+    let total = 1;
+    if (Array.isArray(data)) {
+        return data.reduce((sum, item) => sum + countGraphNodes(item), 0);
+    }
+
+    Object.keys(data).forEach((key) => {
+        total += countGraphNodes(data[key]);
+    });
+    return total;
+}
+
+function formatMetricValue(value, currency) {
+    if (typeof value !== 'number') {
+        return 'No numeric value';
+    }
+
+    if (currency) {
+        try {
+            return new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency,
+                maximumFractionDigits: 2
+            }).format(value);
+        } catch (error) {
+            console.warn('Currency formatting failed:', error);
+        }
+    }
+
+    return new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 2
+    }).format(value);
+}
+
+function renderFormulaPreview(formula, container) {
+    container.innerHTML = '';
+
+    if (!formula) {
+        container.textContent = 'No formula available.';
+        return;
+    }
+
+    if (typeof katex !== 'undefined') {
+        try {
+            katex.render(formula, container, {
+                throwOnError: false,
+                displayMode: true
+            });
+            return;
+        } catch (error) {
+            console.warn('KaTeX formula preview failed:', error);
+        }
+    }
+
+    container.textContent = formula;
+}
+
+function updateRefreshMeta(contextText) {
+    const refreshMeta = document.getElementById('refresh-meta');
+    if (!refreshMeta) {
+        return;
+    }
+
+    const now = new Date();
+    const localTime = now.toLocaleString();
+    refreshMeta.textContent = `Last refresh: ${localTime} (${contextText})`;
 }
 
 async function resolveReferences(data, basePath = 'multidim_dag_resolution/') {
